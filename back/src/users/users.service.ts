@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
+  constructor(private readonly userRepository: UserRepository){} //el tipo de dato que usa UserRepository es UserRepositoy que es le repositorio que creamos 
+  create(createUserDto: CreateUserDto) {                         // en el modulo que importamos, que posee el listado con los usuarios de mentira.
     return 'This action adds a new user';
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userRepository.findAll();
   }
 
   findOne(id: number) {
