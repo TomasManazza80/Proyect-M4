@@ -10,6 +10,7 @@ import ProductRepository from "./products.repository"; // Importación del repos
   providers: [
     ProductsService, // Declaración del servicio
     ProductRepository, // Declaración del repositorio como proveedor
-  ],
+    ],
+    exports:[ProductRepository, ProductsService],
 })
 export class ProductsModule {}

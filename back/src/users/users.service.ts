@@ -7,22 +7,27 @@ import { UserRepository } from './users.repository';
 export class UsersService {
   constructor(private readonly userRepository: UserRepository){} //el tipo de dato que usa UserRepository es UserRepositoy que es le repositorio que creamos 
   create(createUserDto: CreateUserDto) {                         // en el modulo que importamos, que posee el listado con los usuarios de mentira.
-    return 'This action adds a new user';
+    return this.userRepository.create(createUserDto); //en lugar de para todos los parametros, name, email,etc. usamos el dto que creamos create-user.dto.ts, que contiene todos estos parametros.
   }
 
-  findAll() {
+  findAll() {   //este es el metodo que retorna todos los usuarios del repositorio
     return this.userRepository.findAll();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.userRepository.findOne(id);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return this.userRepository.update(id, updateUserDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  remove(id:number){
+    return this.userRepository.remove(id);
+  }
+
+  findOneByEmail(email:string){
+    return this.userRepository.findOneByEmail(email);
+    
   }
 }
