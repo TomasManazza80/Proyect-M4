@@ -1,33 +1,55 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserRepository } from './users.repository';
+import { User } from './entities/user.entity';
+import { UserResponseDto } from './dto/response-user-dto';
+
+
+
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly userRepository: UserRepository){} //el tipo de dato que usa UserRepository es UserRepositoy que es le repositorio que creamos 
-  create(createUserDto: CreateUserDto) {                         // en el modulo que importamos, que posee el listado con los usuarios de mentira.
-    return this.userRepository.create(createUserDto); //en lugar de para todos los parametros, name, email,etc. usamos el dto que creamos create-user.dto.ts, que contiene todos estos parametros.
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const newUser = this.userRepository.create(createUserDto);
+    return this.userRepository.save(newUser);
   }
 
-  findAll() {   //este es el metodo que retorna todos los usuarios del repositorio
-    return this.userRepository.findAll();
+  async findAll(): Promise<UserResponseDto[]> {
+    const users = await this.userRepository.find();
+    return users.map((user: User) => new UserResponseDto(user));
   }
 
-  findOne(id: number) {
-    return this.userRepository.findOne(id);
+  async findOne(id: string): Promise<UserResponseDto | null> {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      return null;
+    }
+    return new UserResponseDto(user);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UpdateResult> {
     return this.userRepository.update(id, updateUserDto);
   }
 
-  remove(id:number){
-    return this.userRepository.remove(id);
+  async remove(id: string) {
+    return this.userRepository.delete(id);
   }
 
-  findOneByEmail(email:string){
-    return this.userRepository.findOneByEmail(email);
-    
+  async findOneByEmail(email: string): Promise<UserResponseDto | null> {
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      return null;
+    }
+    return new UserResponseDto(user);
   }
 }

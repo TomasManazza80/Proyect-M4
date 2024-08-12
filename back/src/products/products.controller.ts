@@ -3,6 +3,9 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductResponseDto } from './dto/response-product.dto'; // Asegúrate de que esta ruta sea correcta
+import { Product } from './entities/product.entity';
+
+
 
 @Controller('products')
 export class ProductsController {
@@ -17,11 +20,13 @@ export class ProductsController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @Get()
+  @HttpCode(HttpStatus.OK)
   findAll(
     @Query('page') page: number = 1, 
     @Query('limit') limit: number = 10
   ) {
-    const products = this.productsService.findAll();
+    const products = this.productsService.findAll(page, limit); // Pasar los argumentos page y limit
     return {
       page,
       limit,
@@ -31,31 +36,29 @@ export class ProductsController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Param('id') id: string) {
-    const product = this.productsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const product = await this.productsService.findOne(id); // Usar await para esperar a que la promesa se resuelva
     if (!product) {
       return { message: 'Error: Producto no encontrado' };
     }
-    return new ProductResponseDto(product); // Asegúrate de que esta clase DTO sea correcta
+    return this.transformProductToResponseDto(product);
+  }
+  
+  private async transformProductToResponseDto(product: Product): Promise<ProductResponseDto> {
+    return new ProductResponseDto(product);
   }
 
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    const updatedProduct = this.productsService.update(+id, updateProductDto);
-    if (updatedProduct === 'Error: Producto no encontrado') {
-      return { message: 'Error: Producto no encontrado' };
-    }
+    const updatedProduct = this.productsService.update(id, updateProductDto);
     return updatedProduct;
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   remove(@Param('id') id: string) {
-    const result = this.productsService.remove(+id);
-    if (result === 'Error: Producto no encontrado') {
-      return { message: 'Error: Producto no encontrado' };
-    }
+    const result = this.productsService.remove(id);
     return { id: result };
   }
 }

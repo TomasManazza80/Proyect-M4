@@ -1,1 +1,30 @@
-export class Product {}
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany } from 'typeorm';
+import { Category } from '../../categories/entities/category.entity';//conectar con la entidad de category
+import { orderDetailEntity } from '../../order-details/entities/order-detail.entity';//conectar con la entidad de order-detail
+
+@Entity()
+export class Product {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ length: 50, nullable: false })
+  name: string;
+
+  @Column('text', { nullable: false })
+  description: string;
+
+  @Column('decimal', { precision: 10, scale: 2, nullable: false })
+  price: number;
+
+  @Column('integer', { nullable: false })
+  stock: number;
+
+  @Column({ default: 'https://example.com/default-image.jpg' })
+  imgUrl: string;
+
+  @ManyToOne(() => Category, (category) => category.products)
+  category: Category;
+
+  @ManyToMany(() => orderDetailEntity, (orderDetail) => orderDetail.products)
+  orderDetails: orderDetailEntity[];
+}

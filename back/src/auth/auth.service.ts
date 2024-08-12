@@ -8,9 +8,9 @@ import { SingInAuthDto } from './dto/singin.dto';
 export class AuthService {
   constructor(private readonly userService: UsersService){}
 
-  singIn(credentials:SingInAuthDto){
-    const user = this.userService.findOneByEmail(credentials.email)
-    if(user && user.password===credentials.password){
+  async singIn(credentials: SingInAuthDto) {
+    const user = await this.userService.findOneByEmail(credentials.email);
+    if (user && user.password === credentials.password) {
       return 'you are logged in';
     }
     return 'Email or password is incorrect, please try again';

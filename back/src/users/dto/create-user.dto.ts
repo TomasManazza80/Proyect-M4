@@ -1,4 +1,4 @@
-import {IsEmail, IsString, Matches} from 'class-validator'; //esta es la libreria que me permite realizar las validaciones
+import {IsEmail, IsNumber, IsString, Matches} from 'class-validator'; //esta es la libreria que me permite realizar las validaciones
 
 
 export class CreateUserDto{
@@ -20,8 +20,8 @@ export class CreateUserDto{
     @IsString()
     address:string;
 
-    @IsString()
-    phone:string;
+    @IsNumber()
+    phone:number;
 
     @IsString()
     country?:string;

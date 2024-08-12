@@ -26,22 +26,22 @@ export class UsersController {
   }
 
   @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(AthuGuard)
-  findOne(@Param('id') id: string) {
-    const user=this.usersService.findOne(+id);
-    return new UserResponseDto(user);
-  }
+@HttpCode(HttpStatus.OK)
+@UseGuards(AthuGuard)
+async findOne(@Param('id') id: string): Promise<UserResponseDto> {
+  const user = await this.usersService.findOne(id);
+  return new UserResponseDto(user);
+}
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }
