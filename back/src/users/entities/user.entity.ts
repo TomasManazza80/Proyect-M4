@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';//conectar con la entidad de order
 
 @Entity()
@@ -27,6 +27,6 @@ export class User {
   @Column({ length: 50 })
   city: string;
 
-  @OneToMany(() => Order, (order) => order.user)
+  @OneToMany(() => Order, (order) => order.user) 
   orders: Order[];
 }

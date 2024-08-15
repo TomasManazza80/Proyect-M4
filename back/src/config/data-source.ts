@@ -14,11 +14,10 @@ const config = {
   password: process.env.DB_PASSWORD || "postgres",
   database: process.env.DB_NAME || "postgres",
   autoLoadEntities: true,
-  synchronize: true,
+ // synchronize: true,   <--- para cuando hacemos migraciones este se desactiva
   logging: true,
   entities:['dist/**/*.entity{.ts,.js}'],   //tanto las entidades como las migraciones, tiene que ser compiladas al momento de por ejemplo hacer 
-  migrations: ['dist/migrations/*{.ts,.js}'] // hacer un npn run build. para poder compilar las migraciones ya que si realizamos cambios estos no se veran si no son compilados 
-
+  migrations: ['dist/migrations/*{.ts,.js}'], // hacer un npn run build. para poder compilar las migraciones ya que si realizamos cambios estos no se veran si no son compilados 
 }
   export default registerAs('typeorm', () => config)
 

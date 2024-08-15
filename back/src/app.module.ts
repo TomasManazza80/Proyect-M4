@@ -7,7 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CategoriesModule } from './categories/categories.module';
 import { OrdersModule } from './orders/orders.module';
 import { OrderDetailsModule } from './order-details/order-details.module';
-import typeormConfig from './config/typeorm.config';
+import typeormConfig from './config/data-source';
 import { SpeedsModule } from './speeds/speeds.module';
 
 

@@ -1,33 +1,39 @@
-import {IsEmail, IsNumber, IsString, Matches} from 'class-validator'; //esta es la libreria que me permite realizar las validaciones
+import { IsEmail, IsNumber,Matches, IsString, MinLength, MaxLength } from 'class-validator';
 
+export class CreateUserDto {
+  @IsString()
+  @MinLength(3)
+  @MaxLength(80)
+  name: string;
 
-export class CreateUserDto{
-    @IsString()
-    name:string;
+  @IsEmail()
+  email: string;
 
-    @IsEmail()
-    email:string;
+  @IsString()
+  @Matches(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/,
+    {
+      message:
+        'La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial',
+    }
+  )
+  password: string;
 
-    @Matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/,
-      {
-        message:
-            'La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial'
-      }, 
-    )
-    password:string;
+  @IsString()
+  @MinLength(3)
+  @MaxLength(80)
+  address: string;
 
-    @IsString()
-    address:string;
+  @IsNumber()
+  phone: number;
 
-    @IsNumber()
-    phone:number;
+  @IsString()
+  @MinLength(5)
+  @MaxLength(20)
+  country?: string;
 
-    @IsString()
-    country?:string;
-
-    @IsString()
-    city?:string;
-    
-
+  @IsString()
+  @MinLength(5)
+  @MaxLength(20)
+  city?: string;
 }

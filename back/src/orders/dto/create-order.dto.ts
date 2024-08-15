@@ -1,12 +1,18 @@
-import { IsArray, IsString } from "class-validator";
+import { IsArray, IsString, IsUUID, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
 
-export interface ProductId{
-        id:string;
+export class ProductId {
+  @IsUUID()
+  id: string;
 }
 
-export class CreateOrderDto{
-    @IsString()
-    userId:string;
-    @IsArray()
-    products:ProductId[]
+export class CreateOrderDto {
+  @IsString()
+  @IsUUID()
+  userId: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductId)
+  products: ProductId[];
 }
