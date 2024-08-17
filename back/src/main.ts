@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 import 'reflect-metadata';
 import { CategoriesSpeed } from './speeds/categories/categories.seed';
 import { ProductsSpeed } from './speeds/products/products.speed';
+ 
 
 
 config();

@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, Query, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductResponseDto } from './dto/response-product.dto'; // Asegúrate de que esta ruta sea correcta
 import { Product } from './entities/product.entity';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImageUploadPipe } from 'src/pipes/image/image-upload/image-upload.pipe';
+import {UploadFileDto} from '../file-upload/dto/upload-file.dto';
 
 
 @Controller('products')
@@ -22,16 +24,10 @@ export class ProductsController {
   @HttpCode(HttpStatus.OK)
   @Get()
   @HttpCode(HttpStatus.OK)
-  findAll(
-    @Query('page') page: number = 1, 
-    @Query('limit') limit: number = 10
-  ) {
-    const products = this.productsService.findAll(page, limit); // Pasar los argumentos page y limit
-    return {
-      page,
-      limit,
-      data: products
-    };
+ 
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    const products = this.productsService.findAll(page, limit);
+    return products;
   }
 
   @Get(':id')
@@ -60,5 +56,23 @@ export class ProductsController {
   remove(@Param('id') id: string) {
     const result = this.productsService.remove(id);
     return { id: result };
+  }
+
+  @Post(':id/upload')
+  @HttpCode(200)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @Param('id') id: string,
+    @UploadedFile(new ImageUploadPipe()) file: Express.Multer.File,
+  ) {
+    const uploadFileData: UploadFileDto = {
+      filedname: file.fieldname,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+      buffer: file.buffer,
+    };
+  
+    return await this.productsService.uploadFile(uploadFileData, id);
   }
 }

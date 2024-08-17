@@ -9,6 +9,8 @@ import { OrdersModule } from './orders/orders.module';
 import { OrderDetailsModule } from './order-details/order-details.module';
 import typeormConfig from './config/data-source';
 import { SpeedsModule } from './speeds/speeds.module';
+import { CloudinaryService } from './service/cloudinary/cloudinary.service';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 
 @Module({
@@ -28,6 +30,8 @@ import { SpeedsModule } from './speeds/speeds.module';
     CategoriesModule,
     OrdersModule,
     OrderDetailsModule,
+    FileUploadModule,
   ],
+  providers: [CloudinaryService],
 })
 export class AppModule {}
