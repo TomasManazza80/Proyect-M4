@@ -1,28 +1,41 @@
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Request } from 'express';
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Request, RequestHandler } from 'express';
 import { Observable } from 'rxjs';
 
 @Injectable()
-export class AthuGuard implements CanActivate {
-  canActivate(
+export class AuthGuard implements CanActivate {
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+
+  ){}
+  async canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  ): Promise<boolean>  {
     const request :  Request = context.switchToHttp().getRequest();
-    const authHeader = request.header('Authirization');
-    const authFormat = authHeader.split(' ');
+    const token = this.extractTokenFromHeader(request);
+    if(!token){
+      throw new UnauthorizedException('Token not found');
+    }
+
+    try {
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+
+      request['user']=payload;
+    } catch {
+      throw new UnauthorizedException('invalid token');
+    }
     
-    
-    if(!authHeader){
-      throw new HttpException('Not Authorized', HttpStatus.UNAUTHORIZED);
-      }
-      const credentialsBase64 = authFormat[1];
-      const decodeCredentials = Buffer.from( credentialsBase64, 'base64'). toString(
-        'utf-8',
-      )
-    
-    console.log(decodeCredentials);
-    const [username, password]= decodeCredentials.split(':');
-    console.log(username, password);
+ 
     return true;
+  }
+
+  private extractTokenFromHeader(request:Request):string | undefined {
+    const [type, token] = request.headers.authorization?.split(' ') ?? [];
+    return type === 'Bearer' ? token : undefined;
   }
 }

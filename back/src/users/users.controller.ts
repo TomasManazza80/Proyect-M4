@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserResponseDto } from './dto/response-user-dto';
-import {AthuGuard} from '../guard/athu/athu.guard';
+import {AuthGuard} from '../guard/athu/athu.guard';
 
 @Controller('users')
 export class UsersController {
@@ -27,7 +27,7 @@ export class UsersController {
 
   @Get(':id')
 @HttpCode(HttpStatus.OK)
-@UseGuards(AthuGuard)
+@UseGuards(AuthGuard)
 async findOne(@Param('id') id: string): Promise<UserResponseDto> {
   const user = await this.usersService.findOne(id);
   return new UserResponseDto(user);

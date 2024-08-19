@@ -1,11 +1,11 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
 
+export class SingInAuthDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
-export class SingInAuthDto{
-    @IsEmail()
-    @IsNotEmpty()
-    email:string;
-
-    @IsNotEmpty()
-    password:string;
+  @IsNotEmpty()
+  @MinLength(8) // Puedo ajustar la longitud del password
+  password: string;
 }

@@ -1,6 +1,6 @@
-import { IsEmail, IsNumber,Matches, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsNumber,Matches, IsString, MinLength, MaxLength, IsNotEmpty } from 'class-validator';
 
-export class CreateUserDto {
+export class SingUpAuthDto {
   @IsString()
   @MinLength(3)
   @MaxLength(80)
@@ -18,6 +18,11 @@ export class CreateUserDto {
     }
   )
   password: string;
+
+@IsNotEmpty()
+@IsString()
+passwordConfirm: string
+
 
   @IsString()
   @MinLength(3)
@@ -37,5 +42,3 @@ export class CreateUserDto {
   @MaxLength(20)
   city?: string;
 }
-
-

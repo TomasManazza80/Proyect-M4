@@ -12,17 +12,26 @@ import { SpeedsModule } from './speeds/speeds.module';
 import { CloudinaryService } from './service/cloudinary/cloudinary.service';
 import { FileUploadModule } from './file-upload/file-upload.module';
 
+import { SharedModule } from './shared/shared/shared.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     SpeedsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load:[typeormConfig],
+      load: [typeormConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (ConfigService: ConfigService)=>ConfigService.get('typeorm'),
+      useFactory: (configService: ConfigService) => configService.get('typeorm'),
+    }),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'), // Reemplaza con la clave de tu JWT
+        signOptions: { expiresIn: '3600s' }, // Ajusta el tiempo de expiración según tus necesidades
+      }),
     }),
     UsersModule,
     AuthModule,
@@ -31,6 +40,7 @@ import { FileUploadModule } from './file-upload/file-upload.module';
     OrdersModule,
     OrderDetailsModule,
     FileUploadModule,
+    SharedModule,
   ],
   providers: [CloudinaryService],
 })

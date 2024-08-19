@@ -1,32 +1,36 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from 'typeorm';
-import { Order } from '../../orders/entities/order.entity';//conectar con la entidad de order
+import { Order } from '../../orders/entities/order.entity';
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator'; // Para validación
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid') //aca el id es un string porque usamos un uuid el cual crea un id unico usando una cadena de texto en lugar de un numero
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ length: 50, nullable: false })
+  @IsNotEmpty()
   name: string;
 
-  @Column({ length: 50, unique: true, nullable: false })
+  @IsEmail()
+  @IsNotEmpty()
+  @Column({ unique: true, nullable: false })
   email: string;
 
-  @Column({ length: 20, nullable: false })
+  @Column({ type: 'varchar', length: 60 }) // Recomendado para almacenar hashes de contraseñas
   password: string;
 
-  @Column('integer')
-  phone: number;
+  @Column({ nullable: true }) // Considera utilizar un tipo de dato más específico
+  phone: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, nullable: true })
   country: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   address: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, nullable: true })
   city: string;
 
-  @OneToMany(() => Order, (order) => order.user) 
+  @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
 }

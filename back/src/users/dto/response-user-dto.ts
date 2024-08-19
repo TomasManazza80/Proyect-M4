@@ -1,14 +1,16 @@
 export class UserResponseDto{
+    id:string;
     name: string;
     email:string;
     address:string;
-    phone:number;
+    phone:string;
     country?:string;
     city?:string;
     password:string;
 
     constructor(partial: Partial<UserResponseDto>){
-        const {name, email, address, phone, country, city, password}=partial;
+        const {id,name, email, address, phone, country, city, password}=partial;
+        this.id=id;
         this.name=name;
         this.email=email;
         this.address=address;

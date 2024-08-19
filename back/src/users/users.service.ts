@@ -16,7 +16,7 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
     const newUser = this.userRepository.create(createUserDto);
     return this.userRepository.save(newUser);
   }
@@ -45,11 +45,9 @@ export class UsersService {
     return this.userRepository.delete(id);
   }
 
-  async findOneByEmail(email: string): Promise<UserResponseDto | null> {
-    const user = await this.userRepository.findOneBy({ email });
-    if (!user) {
-      return null;
-    }
-    return new UserResponseDto(user);
+  async findOneByEmail(email: string): Promise<User | null> {
+    // assuming you have a repository that can find a user by email
+    const user = await this.userRepository.findOne({ where: { email } });
+    return user;
   }
 }
