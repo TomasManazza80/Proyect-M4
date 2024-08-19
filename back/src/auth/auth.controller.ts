@@ -5,7 +5,7 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { SingInAuthDto } from './dto/singin.dto';
 import { SingUpAuthDto } from './dto/singup-auth.dto';
 import { UserResponseDto } from 'src/users/dto/response-user-dto';
-
+import {requiresAuth} from "express-openid-connect"
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -20,6 +20,16 @@ export class AuthController {
     const user = await this.authService.singUp(singUpUser)
     return new UserResponseDto(user)
   }
+
+@Get('auth0/protected')
+getAuth0Protected(@Req() request, requiresAuth){
+  console.log(JSON.stringify(request.oidc));
+  console.log(JSON.stringify(request.oidc.idToken));
+  return JSON.stringify(request.oidc.user);
+
+}
+
+
 
 
   @Get()

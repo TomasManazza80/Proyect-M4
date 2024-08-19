@@ -14,6 +14,8 @@ import { FileUploadModule } from './file-upload/file-upload.module';
 
 import { SharedModule } from './shared/shared/shared.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -42,6 +44,7 @@ import { JwtModule } from '@nestjs/jwt';
     FileUploadModule,
     SharedModule,
   ],
-  providers: [CloudinaryService],
+  controllers:[AppController],
+  providers: [CloudinaryService, AppService],
 })
 export class AppModule {}
