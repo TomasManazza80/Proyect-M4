@@ -4,7 +4,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { SingInAuthDto } from './dto/singin.dto';
 import { SingUpAuthDto } from './dto/singup-auth.dto';
-import { UserResponseDto } from 'src/users/dto/response-user-dto';
+import { UserResponseDto } from '../../src/users/dto/response-user-dto';
 import {requiresAuth} from "express-openid-connect"
 @Controller('auth')
 export class AuthController {

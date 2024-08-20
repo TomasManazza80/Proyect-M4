@@ -41,4 +41,10 @@ passwordConfirm: string
   @MinLength(5)
   @MaxLength(20)
   city?: string;
+
+
+
+  constructor(partial: Partial<SingUpAuthDto>) {
+    Object.assign(this, partial);
+  }
 }

@@ -16,17 +16,22 @@ import { SharedModule } from './shared/shared/shared.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
+import { sqliteDataSourceConfig } from 'test/typeorm-testing-config';
 
 @Module({
   imports: [
     SpeedsModule,
     ConfigModule.forRoot({
+      envFilePath: ['.env.development.local', '.env'],
       isGlobal: true,
-      load: [typeormConfig],
+      load: [typeormConfig, sqliteDataSourceConfig, ()=>({
+        enviroment: process.env.enviroment || 'TEST',
+      })]
+
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => configService.get('typeorm'),
+      useFactory: (configService: ConfigService) => configService.get('enviroment') === 'TEST' ? configService.get('sqlite') : configService.get('postgress'),
     }),
     JwtModule.registerAsync({
       inject: [ConfigService],

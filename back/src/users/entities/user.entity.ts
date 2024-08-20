@@ -2,6 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, OneToOne } from 'typ
 import { Order } from '../../orders/entities/order.entity';
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator'; // Para validación
 
+export enum Role{
+  User = 'user',
+  Admin = 'admin',
+}
+
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -33,4 +39,8 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
+
+
+  @Column({default:Role.User})
+  administrator:string;
 }

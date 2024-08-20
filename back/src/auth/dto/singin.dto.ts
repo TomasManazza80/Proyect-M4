@@ -8,4 +8,8 @@ export class SingInAuthDto {
   @IsNotEmpty()
   @MinLength(8) // Puedo ajustar la longitud del password
   password: string;
+
+  constructor(partial: Partial<SingInAuthDto>){
+    Object.assign(this, partial);
+  }
 }
