@@ -8,7 +8,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageUploadPipe } from 'src/pipes/image/image-upload/image-upload.pipe';
 import {UploadFileDto} from '../file-upload/dto/upload-file.dto';
 import {AuthGuard} from '../guard/athu/athu.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+
+@ApiBearerAuth()
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}

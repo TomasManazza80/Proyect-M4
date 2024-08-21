@@ -17,10 +17,14 @@ export class ProductsSpeed {
     const foundCategory = await this.categoryRepository.findOne({
       where: { name: category },
     });
-
+  
     if (!foundCategory) {
-      throw new Error(`Category ${category} not found`);
+      const newCategory = new Category();
+      newCategory.name = category;
+      await this.categoryRepository.save(newCategory);
+      return newCategory;
     }
+  
     return foundCategory;
   }
 

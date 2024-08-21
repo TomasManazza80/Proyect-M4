@@ -58,8 +58,8 @@ describe('User (e2e)', ()=>{
 
   it('/user (GET) return array whit users and OK status', async()=>{
     const req = await request(app.getHttpServer())
-      .get('/users'),
-      .set('Authorization', `Bearer ${authToken}`);
+      .Get('/users'),
+      .Set('Authorization', `Bearer ${authToken}`);
 
     console.log("TOKEN", authToken);
     console.log("Request", req.body);

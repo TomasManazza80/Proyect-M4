@@ -6,6 +6,11 @@ import { SingInAuthDto } from './dto/singin.dto';
 import { SingUpAuthDto } from './dto/singup-auth.dto';
 import { UserResponseDto } from '../../src/users/dto/response-user-dto';
 import {requiresAuth} from "express-openid-connect"
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
+
+@ApiBearerAuth()
+@ApiTags('products')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

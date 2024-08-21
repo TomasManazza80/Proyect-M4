@@ -5,7 +5,11 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserResponseDto } from './dto/response-user-dto';
 import {AuthGuard} from '../guard/athu/athu.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+
+@ApiBearerAuth()
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

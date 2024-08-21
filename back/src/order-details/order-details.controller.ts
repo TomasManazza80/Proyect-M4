@@ -3,7 +3,11 @@ import { OrderDetailsService } from './order-details.service';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
 import { StringDecoder } from 'string_decoder';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+
+@ApiBearerAuth()
+@ApiTags('order-details')
 @Controller('order-details')
 export class OrderDetailsController {
   constructor(private readonly orderDetailsService: OrderDetailsService) {}
