@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Product } from "src/products/entities/product.entity";
-import { Category } from "src/categories/entities/category.entity";
+import { Product } from "../../products/entities/product.entity";
+import { Category } from "../../categories/entities/category.entity";
 import { productsMock } from "./products.mock";
 @Injectable()
 export class ProductsSpeed {

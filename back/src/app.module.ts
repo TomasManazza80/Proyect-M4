@@ -16,7 +16,7 @@ import { SharedModule } from './shared/shared/shared.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
-import { sqliteDataSourceConfig } from 'test/typeorm-testing-config';
+import { sqliteDataSourceConfig } from '../test/typeorm-testing-config';
 
 @Module({
   imports: [

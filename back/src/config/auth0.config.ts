@@ -1,8 +1,8 @@
 import * as dotenv from "dotenv";
 
 dotenv.config({
-    path: 'env.development.local',
-});
+    path: '../.env.development',
+  });
 
 export const auth0Config = {
     authRequired: false,

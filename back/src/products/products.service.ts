@@ -6,7 +6,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { FileUploadService } from 'src/file-upload/file-upload.service';
+import { FileUploadService } from '../file-upload/file-upload.service';
 import { UploadFileDto } from 'src/file-upload/dto/upload-file.dto';
  // Importación corregida
 
@@ -32,8 +32,8 @@ export class ProductsService {
     return products;
   }
 
-  async findOne(id: string) {       //si hay errores al momento de ejecutar esta funcion es porque el id tiene que ser un string
-    return await this.productRepository.findOne({where: {id}});
+  async findOne(id: string) {
+    return await this.productRepository.findOne({ where: { id } });
   }
 
   async update(

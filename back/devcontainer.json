@@ -1,0 +1,75 @@
+{
+    "dockerfile": {
+      "stages": [
+        {
+          "name": "development",
+          "workdir": "/usr/src/app",
+          "commands": [
+            "npm install"
+          ]
+        },
+        {
+          "name": "build",
+          "workdir": "/usr/src/app",
+          "commands": [
+            "npm run build",
+            "npm ci --only=production && npm cache clean --force"
+          ]
+        },
+        {
+          "name": "production",
+          "workdir": "/usr/src/app",
+          "exposedPorts": [
+            "3000"
+          ],
+          "command": "node dist/main.js"
+        }
+      ]
+    },
+    "dockerCompose": {
+      "services": {
+        "e-commerce": {
+          "build": {
+            "context": ".",
+            "dockerfile": "Dockerfile"
+          },
+          "ports": [
+            "3000:3000"
+          ],
+          "volumes": [
+            ".:/src"
+          ],
+          "env_file": [
+            ".env.development.local"
+          ],
+          "environment": {
+            "POSTGRES_DB": "mydatabase",
+            "POSTGRES_USER": "myuser",
+            "POSTGRES_PASSWORD": "mypassword",
+            "POSTGRES_HOST": "nest-demo-postgres",
+            "POSTGRES_PORT": "5432"
+          },
+          "depends_on": [
+            "nest-demo-postgres"
+          ]
+        },
+        "nest-demo-postgres": {
+          "image": "postgres:13",
+          "environment": {
+            "POSTGRES_USER": "myuser",
+            "POSTGRES_PASSWORD": "mypassword",
+            "POSTGRES_DB": "mydatabase"
+          },
+          "volumes": [
+            "postgres_data_20a:/var/lib/postgresql/data"
+          ],
+          "ports": [
+            "5432:5432"
+          ]
+        }
+      },
+      "volumes": {
+        "postgres_data_20a": {}
+      }
+    }
+  }

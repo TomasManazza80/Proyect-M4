@@ -5,7 +5,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductResponseDto } from './dto/response-product.dto'; // Asegúrate de que esta ruta sea correcta
 import { Product } from './entities/product.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ImageUploadPipe } from 'src/pipes/image/image-upload/image-upload.pipe';
+import { ImageUploadPipe } from '../pipes/image/image-upload/image-upload.pipe';
 import {UploadFileDto} from '../file-upload/dto/upload-file.dto';
 import {AuthGuard} from '../guard/athu/athu.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -37,8 +37,13 @@ export class ProductsController {
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id') id: string) {
-    const product = await this.productsService.findOne(id); // Usar await para esperar a que la promesa se resuelva
+    console.log(`Buscando producto con ID: ${id}`);
+    const uuid = id.replace(/-/g, ''); // Elimina los guiones del UUID
+    console.log(`UUID sin guiones: ${uuid}`);
+    const product = await this.productsService.findOne(id);
+    console.log(`Producto encontrado: ${product}`);
     if (!product) {
+      console.log(`Producto no encontrado`);
       return { message: 'Error: Producto no encontrado' };
     }
     return this.transformProductToResponseDto(product);

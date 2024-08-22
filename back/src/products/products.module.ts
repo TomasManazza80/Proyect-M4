@@ -3,8 +3,8 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
-import { FileUploadService } from 'src/file-upload/file-upload.service';
-import { CloudinaryService } from 'src/service/cloudinary/cloudinary.service';
+import { FileUploadService } from '../file-upload/file-upload.service';
+import { CloudinaryService } from '../service/cloudinary/cloudinary.service';
 
 @Module({
   imports: [
