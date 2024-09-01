@@ -35,7 +35,7 @@ export class UsersController {
 async findOne(@Param('id') id: string): Promise<UserResponseDto> {
   const user = await this.usersService.findOne(id);
   return new UserResponseDto(user);
-}
+  }
 
   @Put(':id')
   @HttpCode(HttpStatus.OK)

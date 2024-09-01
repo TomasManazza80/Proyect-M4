@@ -15,14 +15,18 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) {}
+  constructor(
+    private readonly productsService: ProductsService,
+  
+  ) {}
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProductDto: CreateProductDto) {
-    const productId = this.productsService.create(createProductDto);
-    return { id: productId };
-  }
+@HttpCode(HttpStatus.CREATED)
+async create(@Body() createProductDto: CreateProductDto) {
+  const product = await this.productsService.create(createProductDto);
+  console.log('Producto creado:', product);
+  return JSON.stringify(product);
+}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -36,18 +40,10 @@ export class ProductsController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string) {
-    console.log(`Buscando producto con ID: ${id}`);
-    const uuid = id.replace(/-/g, ''); // Elimina los guiones del UUID
-    console.log(`UUID sin guiones: ${uuid}`);
-    const product = await this.productsService.findOne(id);
-    console.log(`Producto encontrado: ${product}`);
-    if (!product) {
-      console.log(`Producto no encontrado`);
-      return { message: 'Error: Producto no encontrado' };
-    }
-    return this.transformProductToResponseDto(product);
+  findOne(@Param('id') id: string){
+    return this.productsService.findOne( id );
   }
+  
   
   private async transformProductToResponseDto(product: Product): Promise<ProductResponseDto> {
     return new ProductResponseDto(product);

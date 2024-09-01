@@ -6,9 +6,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserResponseDto } from './dto/response-user-dto';
 
-
-
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -17,8 +14,17 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<CreateUserDto> {
+    console.log('Creando usuario:', createUserDto);
     const newUser = this.userRepository.create(createUserDto);
-    return this.userRepository.save(newUser);
+    console.log('Nuevo usuario creado:', newUser);
+    try {
+      const savedUser = await this.userRepository.save(newUser);
+      console.log('Usuario guardado:', savedUser);
+      return savedUser;
+    } catch (error) {
+      console.error('Error al guardar el usuario:', error);
+      throw error;
+    }
   }
 
   async findAll(): Promise<UserResponseDto[]> {
@@ -27,7 +33,7 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<UserResponseDto | null> {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id }); // Search by UUID
     if (!user) {
       return null;
     }

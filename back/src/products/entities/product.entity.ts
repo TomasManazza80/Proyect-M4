@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';//conectar con la entidad de category
-import { orderDetailEntity } from '../../order-details/entities/order-detail.entity';//conectar con la entidad de order-detail
+import { OrderDetail } from '../../order-details/entities/order-detail.entity';//conectar con la entidad de order-detail
 
 @Entity()
 export class Product {
@@ -25,6 +25,6 @@ export class Product {
   @ManyToOne(() => Category, (category) => category.products)
   category: Category;
 
-  @ManyToMany(() => orderDetailEntity, (orderDetail) => orderDetail.products)
-  orderDetails: orderDetailEntity[];
+  @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)//aca se ve como  queremos acceder a los productos de una order detail, usando orderDetail.products
+  orderDetails: OrderDetail[];
 }

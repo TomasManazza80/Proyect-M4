@@ -1,4 +1,4 @@
-import { IsArray, IsString, IsUUID, ValidateNested } from "class-validator";
+import { IsArray, IsDate, IsString, IsUUID, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -17,15 +17,12 @@ export class CreateOrderDto {
   @IsUUID()
   userId: string;
 
-
-
   @ApiProperty({
-    type: Array,
-    description: 'list of products',
+    type: String,
+    description: 'date of the user',
     required: true,
   })
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => ProductId)
-  products: ProductId[];
+
+  @IsDate()
+  date: Date;
 }

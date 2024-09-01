@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrderDetailDto } from './dto/create-order-detail.dto';
 import { UpdateOrderDetailDto } from './dto/update-order-detail.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { orderDetailEntity } from './entities/order-detail.entity';
+import { OrderDetail } from './entities/order-detail.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class OrderDetailsService {
   constructor(
-    @InjectRepository(orderDetailEntity)
-    private readonly orderDetailRepository: Repository<orderDetailEntity>,
+    @InjectRepository(OrderDetail)
+    private readonly orderDetailRepository: Repository<OrderDetail>,
   ) {}
 
   async create(createOrderDetailDto: CreateOrderDetailDto) {
@@ -24,7 +24,7 @@ export class OrderDetailsService {
   async findOne(id: string) {
     const orderDetail = await this.orderDetailRepository.findOneBy({ id });
     if (!orderDetail) {
-      console.log(`Order detail with ID ${id} not found`);
+      console.log(`Order detail with ID ${id} not found!`);
     }
     return orderDetail;
   }
@@ -39,8 +39,6 @@ export class OrderDetailsService {
   async remove(id: string) {
     const orderDetail = await this.findOne(id);
     return this.orderDetailRepository.remove(orderDetail);
-  }
-
-  
+  }  
 }
 
