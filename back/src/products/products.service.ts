@@ -9,7 +9,9 @@ import { Repository } from 'typeorm';
 import { FileUploadService } from '../file-upload/file-upload.service';
 import { UploadFileDto } from 'src/file-upload/dto/upload-file.dto';
  // Importación corregida
+ import { In } from 'typeorm';
 
+ 
 @Injectable()
 export class ProductsService {
   constructor(
@@ -17,7 +19,14 @@ export class ProductsService {
     private readonly productRepository:Repository<Product>,
     private readonly fileUploadService: FileUploadService,
   ) {}
-
+  async findMany(ids: string[]): Promise<Product[]> {
+    const products = await this.productRepository.find({
+      where: {
+        id: In(ids),
+      },
+    });
+    return products;
+  }
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const newProduct = this.productRepository.create(createProductDto);
     return await this.productRepository.save(newProduct);
@@ -33,7 +42,12 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    return await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOneBy({id:id});
+    console.log(product);
+    if(!product){
+      throw new Error('Producto no encontrado!!!!!!!!!!');
+    }
+      return product;
   }
 
   async update(

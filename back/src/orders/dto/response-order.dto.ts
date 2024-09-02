@@ -1,4 +1,4 @@
-import {orderDetailEntity} from 'src/order-details/entities/order-detail.entity';
+import {OrderDetail} from '../../order-details/entities/order-detail.entity';
 export class OrederResponseDto{
 
     id: string;
@@ -14,7 +14,7 @@ export class OrederResponseDto{
 
 
 
-constructor(orderDetail: orderDetailEntity){
+constructor(orderDetail: OrderDetail){
     this.id = orderDetail.id;
     this.price = orderDetail.price;
     this.products = orderDetail.products;

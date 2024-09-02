@@ -8,7 +8,9 @@ import { ProductsService } from '../products/products.service';
 import { OrderDetailsService } from '../order-details/order-details.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOrderDetailDto } from '../order-details/dto/create-order-detail.dto';
-import { OrederResponseDto } from './dto/response-order.dto';
+import { OrderDetail } from 'src/order-details/entities/order-detail.entity';
+import { ProductResponseDto } from 'src/products/dto/response-product.dto';
+
 
 
 @Injectable()
@@ -24,66 +26,90 @@ export class OrdersService {
   calcularTotal(products: any[]): number {
     let total = 0;
     for (const product of products) {
-      total += product.price;
+      total += Number(product.price);
     }
     return total;
   }
 
-  async create(createOrderDto: CreateOrderDto) {
-    const { userId, products } = createOrderDto;
+
+  async create (body:any): Promise<Order> {
+    const { userId, products } = body;
+  
+    // Validar que el usuario exista
     const user = await this.userService.findOne(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
   
-    const order = {
-      user: user,
-      date: new Date(),
-    };
+    // Validar que los productos existan y calcular el total
+    const productIds = products.map((product) => product.id);
+    const productsData = await this.productsService.findMany(productIds);
+    const total = this.calcularTotal(productsData);
   
-    const orderOfEntity = await this.orderRepository.save(
-      this.orderRepository.create(order),
-    );
-    const total = await this.calcularTotal(products);
-    const orderDetail = new CreateOrderDetailDto();
+    // Crear el pedido
+    const order = new Order();
+    order.user = userId;
+    order.date = new Date();
+  
+    //crea el order detail:
+    const orderDetail = new OrderDetail();
+    orderDetail.order = order; // Establece la relación con el order
+  
+    const productsFound = [];
+    for (const product of productsData){
+      const producto = await this.productsService.findOne(product.id);
+      productsFound.push(producto);
+    }
   
     orderDetail.price = total;
-    orderDetail.products = products;
-    orderDetail.order = orderOfEntity;
+    orderDetail.products = productsFound;//arreclo de profuctos;
   
-    const orderEntity = await this.orderDetailsService.create(orderDetail);
+    // Establece la relación inversa en el order
+    order.orderDetail = orderDetail;
   
-    return new OrederResponseDto(orderEntity);
-  }
-  async update(id: string, updateOrderDto: UpdateOrderDto) {
-    const order = await this.orderRepository.findOne({where: { id }});
+    await this.orderDetailsService.create(orderDetail);
   
-    if (!order) {
-      throw new Error('Order not found');
-    }
-  
-    const { userId, products } = updateOrderDto;
-
-    order.id=userId;
-
-    if (products) {
-      const total = await this.calcularTotal(products);
-      order.orderDetail.price = total; // Actualiza el total en OrderDetail
-    }
-  
+    // Guardar el pedido en la base de datos
     await this.orderRepository.save(order);
   
     return order;
   }
-  findAll() {
-    return `This action returns all orders`;
+
+ 
+
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+  
+  
+    return "se actualizó una orden, terminar codigo";
+  }
+  async findAll() {
+    return this.orderRepository.find();
   }
 
   async findOne(id: string) {
-    const order = await this.orderRepository.findOneBy({ id });
-    const orderDetails = await this.orderDetailsService.findOne(
-      order.id,
-    );
-    return orderDetails;
+    try {
+      const order = await this.orderRepository.findOneBy({ id });
+      if (!order) {
+        throw new Error('LA ORDER NO SE PUDO ENCONTRAR');
+      }
+  
+      const orderDetail = await this.orderDetailsService.findOne( order.orderDetail?.id );
+      if (!orderDetail) {
+        throw new Error('EL ORDER DETAIL NO SE PUDO ENCONTRAR');
+      }
+      
+      console.log('ESTOS SON LOS PRODUCTOS:', orderDetail.products);
+      return { 
+        order_id: order.id,
+        date: order.date,
+        orderDetail: orderDetail,
+        productos: orderDetail.products
+      };
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error al obtener la order y el order detail');
+    }
   }
-
 
   async remove(id: string): Promise<void> {
     const order = await this.orderRepository.findOneBy({ id });
@@ -92,4 +118,5 @@ export class OrdersService {
     }
     await this.orderRepository.remove(order);
   }
+
 }
