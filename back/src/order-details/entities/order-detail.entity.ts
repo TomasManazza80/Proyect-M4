@@ -16,4 +16,6 @@ export class OrderDetail {
   @ManyToMany(() => Product, (product) => product.orderDetails)
   @JoinColumn({ name: 'products' })
   products: Product[];
+
+  
 }

@@ -28,9 +28,9 @@ WORKDIR /usr/src/app
 
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/src ./dist/src
+COPY --from=build /usr/src/app/dist/main.js /usr/src/app/dist/main.js
 
 EXPOSE 3000
 
 CMD [ "node", "dist/src/main.js" ]
-
-

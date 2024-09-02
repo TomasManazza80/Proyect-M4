@@ -1,29 +1,27 @@
 import {OrderDetail} from '../../order-details/entities/order-detail.entity';
-export class OrederResponseDto{
-
-    id: string;
-    price: number;
-    products: object[];
-    order: {
-        id:string;
-        date:Date;
-        user:{
-            id:string;
+import {Order} from '../../orders/entities/order.entity'
+export class OrderResponseDto {
+        constructor(order: Order, orderDetail: OrderDetail) {
+          this.order = {
+            id: order.id,
+            date: order.date,
+          };
+      
+          this.orderDetail = {
+            id: orderDetail.id,
+            price: orderDetail.price,
+            products: orderDetail.products,
+          };
+        }
+      
+        order: {
+          id: string;
+          date: Date;
         };
-    };
-
-
-
-constructor(orderDetail: OrderDetail){
-    this.id = orderDetail.id;
-    this.price = orderDetail.price;
-    this.products = orderDetail.products;
-    this.order = {
-        id:orderDetail.order.id,
-        date: orderDetail.order.date,
-        user:{
-            id: orderDetail.order.user.id,
-          },
+      
+        orderDetail: {
+          id: string;
+          price: number;
+          products: any[];
         };
-    }
-}
+      }
