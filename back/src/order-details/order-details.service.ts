@@ -20,7 +20,9 @@ export class OrderDetailsService {
   async findAll() {
     return this.orderDetailRepository.find();
   }
-
+ async save(orderDe){
+  await this.orderDetailRepository.save(orderDe);
+ }
   async findOne(id: string) {
     const orderDetail = await this.orderDetailRepository.findOneBy({ id });
     if (!orderDetail) {

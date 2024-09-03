@@ -11,7 +11,8 @@ import { CreateOrderDetailDto } from '../order-details/dto/create-order-detail.d
 import { OrderDetail } from 'src/order-details/entities/order-detail.entity';
 import { ProductResponseDto } from 'src/products/dto/response-product.dto';
 import { OrderResponseDto } from './dto/response-order.dto';
-
+import { OrdersModule } from './orders.module';
+import { Product } from 'src/products/entities/product.entity';
 
 
 @Injectable()
@@ -32,7 +33,9 @@ export class OrdersService {
     return total;
   }
 
-  async create(body: any): Promise<Order> {
+
+  
+  async create (body:any) {
     const { userId, products } = body;
   
     // Validar que el usuario exista
@@ -41,24 +44,46 @@ export class OrdersService {
       throw new Error('User not found');
     }
   
+    // Validar que los productos existan y calcular el total
+    const productIds = products.map((product) => product.id);
+    const productsData = await this.productsService.findMany(productIds);
+    const total = this.calcularTotal(productsData);
+  
     // Crear el pedido
     const order = new Order();
     order.user = userId;
+    order.date = new Date();
   
-    // Crear el detalle del pedido
+    //crea el order detail:
     const orderDetail = new OrderDetail();
-    orderDetail.order = order;
+    orderDetail.order = order; // Establece la relación con el order
   
-    // Almacenar los productos en la columna products de order_detail
-    orderDetail.products = products.map((product) => product.id);
-    
-    // Guardar el pedido y el detalle del pedido
-    await this.orderRepository.save(order);
-    await this.orderDetailsService.create(orderDetail);
-
-    return order;
+    const productsFound = [];
+    for (const product of productsData){
+      const producto = await this.productsService.findOne(product.id);
+      producto.stock -= 1; // disminuir el stock en 1
+      await this.productsService.save(producto); // guardar el cambio en el stock
+      productsFound.push(producto);
+    }
+  
+    console.log("LISTADO DE PRODUCTOS: ", productsFound)
+  
+    orderDetail.price = total;
+    orderDetail.products = productsFound;//arreclo de profuctos;
+  
+    // Establece la relación inversa en el order
+  
+    const orderDetailsaved = await this.orderDetailsService.save(orderDetail);
+    //if(!orderDetailsaved) throw new Error('PROBLEMA CON EL ORDERDETAIL AL GUARDAR EN orderDetailsaved = orderDetail;');
+    // Guardar el pedido en la base de datos
+    //const orderSaved = await this.orderRepository.save(order);
+    //if(!orderSaved) throw new Error('PROBLEMA CON EL ORDER AL GUARDAR EN orderSaved = order;');
+    const savedOrder = await this.orderRepository.save(order); 
+    return {
+      order,
+      orderDetail
+    };
   }
- 
 
  
 
@@ -71,7 +96,7 @@ export class OrdersService {
     return this.orderRepository.find();
   }
 
-  async findOne(id: string):Promise<OrderResponseDto> {
+  async findOne(id: string) {
     try {
       const order = await this.orderRepository.findOneBy({ id });
       if (!order) {
@@ -83,23 +108,13 @@ export class OrdersService {
         throw new Error('EL ORDER DETAIL NO SE PUDO ENCONTRAR');
       }
       
-      console.log('ESTOS SON LOS PRODUCTOS:', orderDetail.products);
-
-
-      //crear el response dto que retorna la funcion
-      const orderFinal: OrderResponseDto = {
-        order: {
-          id: order.id,
-          date: order.date,
-        },
-        orderDetail: {
-          id: orderDetail.id,
-          price: orderDetail.price,
-          products: orderDetail.products,
-        },
+      
+      return {
+        order_id: order.id,
+        date: order.date,
+        orderDetail_id: orderDetail.id,
+        orderDetail_price: orderDetail.price,
       };
-
-      return orderFinal;
     } catch (error) {
       console.error(error);
       throw new Error('Error al obtener la order y el order detail');

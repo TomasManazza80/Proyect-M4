@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNumber } from "class-validator";
+import { IsString, IsNumber, IsNotEmpty } from "class-validator";
 
 export class CreateProductDto{
     @ApiProperty({
@@ -8,7 +8,8 @@ export class CreateProductDto{
         required: true,
     })
     @IsString()
-    name:string;
+    @IsNotEmpty()
+    name: string;
 
     @ApiProperty({
         type: Number,

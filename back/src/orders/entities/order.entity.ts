@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { OrderDetail } from '../../order-details/entities/order-detail.entity';
+import {UserResponseDto} from "../../users/dto/response-user-dto";
 
 @Entity()
 export class Order {
@@ -9,12 +10,14 @@ export class Order {
 
   @ManyToOne(() => User, (user) => user.orders)
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: UserResponseDto;
 
   @Column({ type: 'date', nullable: false })
   date: Date;
+  
 
   @OneToOne(() => OrderDetail, (orderDetail) => orderDetail.order)
-  @JoinColumn({name:'order_detail_id'}) //JoinColumn solo tiene que estar del lado de la entidad que carga con la relacion en este caso es order
+  @JoinColumn({name: 'orderDetail_Id'})
   orderDetail: OrderDetail;
+
 }

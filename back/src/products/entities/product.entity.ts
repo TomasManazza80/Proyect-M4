@@ -26,5 +26,5 @@ export class Product {
   category: Category;
 
   @ManyToMany(() => OrderDetail, (orderDetail) => orderDetail.products)//aca se ve como  queremos acceder a los productos de una order detail, usando orderDetail.products
-  orderDetails: OrderDetail[];
+  orderDetail: OrderDetail[];
 }

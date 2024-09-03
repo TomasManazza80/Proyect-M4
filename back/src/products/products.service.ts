@@ -28,9 +28,13 @@ export class ProductsService {
     return products;
   }
   async create(createProductDto: CreateProductDto): Promise<Product> {
+    if (!createProductDto.name) {
+      throw new Error('El nombre es requerido');
+    }
+  
     const newProduct = this.productRepository.create(createProductDto);
     return await this.productRepository.save(newProduct);
-  } 
+  }
 
   async findAll(page: number, limit: number) {
     const products = await this.productRepository.find({
@@ -41,6 +45,10 @@ export class ProductsService {
     return products;
   }
 
+
+  async save(product){
+    await this.productRepository.save(product);
+  }
   async findOne(id: string) {
     const product = await this.productRepository.findOneBy({id:id});
     console.log(product);

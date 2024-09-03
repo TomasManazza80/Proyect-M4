@@ -10,12 +10,12 @@ export class OrderDetail {
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
-  @OneToOne(() => Order, (order) => order.orderDetail)// aca tenemos que determinar cual de las propiedades de order necesitamos, en este caso orderDetail
+
+  @OneToOne(() => Order, (order) => order.orderDetail)
   order: Order;
 
-  @ManyToMany(() => Product, (product) => product.orderDetails)
-  @JoinColumn({ name: 'products' })
-  products: Product[];
 
+  @Column('jsonb', { nullable: true })
+  products: Array<Product>;
   
 }
